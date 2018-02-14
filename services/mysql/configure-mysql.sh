@@ -1,37 +1,138 @@
-# Copyright 2017-Present Pivotal Software, Inc. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#  http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+#!/bin/bash
+set -eu
 
----
-platform: linux
+export OPSMAN_DOMAIN_OR_IP_ADDRESS="opsman.$pcf_ert_domain"
 
-image_resource:
-  type: docker-image
-  source:
-    repository: czero/rootfs
+network=$(
+  jq -n \
+    --arg iaas $pcf_iaas \
+    --arg singleton_availability_zone "$pcf_az_1" \
+    --arg other_availability_zones "$pcf_az_1,$pcf_az_2,$pcf_az_3" \
+    '
+    {
+      "network": {
+        "name": (if $iaas == "aws" then "deployment" else "ert" end),
+      },
+      "service_network": {
+        "name": "dynamic-services",
+      },
+      "other_availability_zones": ($other_availability_zones | split(",") | map({name: .})),
+      "singleton_availability_zone": {
+        "name": $singleton_availability_zone
+      }
+    }
+    '
+)
 
-inputs:
-  - name: pivnet-opsmgr
-  - name: pcf-pipelines
+syslog_host="syslog.$pcf_ert_domain"
+syslog_port="6514"
 
-outputs:
-  - name: cliaas-config
+backup_bucket="$(jq -r '.s3_pcf_mysql_backup' extra-infrastructure/metadata)"
+backup_aws_access_key_id="$(jq -r '.s3_mysql_backups_access_key_id' extra-infrastructure/metadata)"
+backup_aws_secret_access_key="$(jq -r '.s3_mysql_backups_secret_access_key' extra-infrastructure/metadata)"
 
-params:
-  AWS_ACCESS_KEY_ID:
-  AWS_SECRET_ACCESS_KEY:
-  AWS_REGION:
-  AWS_VPC_ID:
+properties=$(
+  jq -n \
+    --arg alert_recipient_email $ALERT_RECIPIENT_EMAIL \
+    --arg syslog_host $syslog_host \
+    --arg syslog_port $syslog_port \
+    --arg backup_bucket $backup_bucket \
+    --arg backup_aws_access_key_id "$backup_aws_access_key_id" \
+    --arg backup_aws_secret_access_key "$backup_aws_secret_access_key" \
+    '
+    {
+      ".properties.optional_protections": {
+        "value": "enable"
+      },
+      ".properties.syslog": {
+        "value": "disabled"
+      },
+      ".properties.optional_protections.enable.recipient_email": {
+        "value": $alert_recipient_email
+      },
+      ".properties.syslog": {
+        "value": "enabled"
+      },
+      ".properties.syslog.enabled.address": {
+        "value": $syslog_host
+      },
+      ".properties.syslog.enabled.port": {
+        "value": $syslog_port
+      },
+      ".properties.backup_options": {
+        "value": "enable"
+      },
+      ".properties.backup_options.enable.cron_schedule": {
+        "value": "@every 30m"
+      },
+      ".properties.backup_options.enable.backup_all_masters": {
+        "value": "1"
+      },
+      ".properties.backups": {
+        "value": "enable"
+      },
+      ".properties.backups.enable.endpoint_url": {
+        "value": "https://s3.eu-central-1.amazonaws.com"
+      },
+      ".properties.backups.enable.bucket_name": {
+        "value": $backup_bucket
+      },
+      ".properties.backups.enable.bucket_path": {
+        "value": "backups"
+      },
+      ".properties.backups.enable.access_key_id": {
+        "value": $backup_aws_access_key_id
+      },
+      ".properties.backups.enable.secret_access_key": {
+        "value": {
+          "secret": $backup_aws_secret_access_key
+        }
+      },
+      ".properties.backups.enable.region": {
+        "value": "eu-central-1"
+      }
+    }
+    '
+)
 
-run:
-  path: music-repo/services/mysql/task.sh
+resources=$(
+  jq -n \
+    '
+      {
+        "backup-prepare": {
+          "instances": 1
+        }
+      }
+    '
+)
+
+om-linux \
+  --target "https://$OPSMAN_DOMAIN_OR_IP_ADDRESS" \
+  --username "$OPS_MGR_USR" \
+  --password "$OPS_MGR_PWD" \
+  --skip-ssl-validation \
+  configure-product \
+  --product-name p-mysql \
+  --product-network "$network" \
+  --product-properties "$properties" \
+  --product-resources "$resources"
+
+om-linux \
+  --target "https://$OPSMAN_DOMAIN_OR_IP_ADDRESS" \
+  --username "$OPS_MGR_USR" \
+  --password "$OPS_MGR_PWD" \
+  --skip-ssl-validation \
+  set-errand-state \
+  --product-name "p-mysql" \
+  --errand-name "broker-registrar" \
+  --post-deploy-state "when-changed"
+
+om-linux \
+  --target "https://$OPSMAN_DOMAIN_OR_IP_ADDRESS" \
+  --username "$OPS_MGR_USR" \
+  --password "$OPS_MGR_PWD" \
+  --skip-ssl-validation \
+  set-errand-state \
+  --product-name "p-mysql" \
+  --errand-name "smoke-tests" \
+  --post-deploy-state "when-changed"
