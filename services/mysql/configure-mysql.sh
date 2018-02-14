@@ -29,9 +29,9 @@ network=$(
 syslog_host="syslog.$pcf_ert_domain"
 syslog_port="6514"
 
-backup_bucket="$(jq -r '.s3_pcf_mysql_backup' extra-infrastructure/metadata)"
-backup_aws_access_key_id="$(jq -r '.s3_mysql_backups_access_key_id' extra-infrastructure/metadata)"
-backup_aws_secret_access_key="$(jq -r '.s3_mysql_backups_secret_access_key' extra-infrastructure/metadata)"
+backup_bucket=$MYSQL_BACKUPS_S3_BUCKET_NAME
+backup_aws_access_key_id=$MYSQL_BACKUPS_S3_ACCESS_KEY_ID
+backup_aws_secret_access_key=$MYSQL_BACKUPS_S3_SECRET_ACCESS_KEY
 
 properties=$(
   jq -n \
@@ -62,7 +62,7 @@ properties=$(
         "value": $syslog_port
       },
       ".properties.backup_options": {
-        "value": "enable"
+        "value": "disabled"
       },
       ".properties.backup_options.enable.cron_schedule": {
         "value": "@every 30m"
