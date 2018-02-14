@@ -17,18 +17,22 @@ platform: linux
 
 image_resource:
   type: docker-image
-  source: {repository: czero/rootfs}
+  source:
+    repository: czero/rootfs
 
 inputs:
-  - name: pcf-pipelines
+  - name: jans-repo
 
 params:
-  OPSMAN_CLIENT_ID:
-  OPSMAN_CLIENT_SECRET:
-  OPSMAN_USERNAME:
-  OPSMAN_PASSWORD:
-  OPSMAN_DOMAIN_OR_IP_ADDRESS:
+      pcf_ert_domain:
+      pcf_iaas:
+      pcf_az_1:
+      pcf_az_2:
+      pcf_az_3:
+      ALERT_RECIPIENT_EMAIL:
+      OPSMAN_DOMAIN_OR_IP_ADDRESS:
+      OPS_MGR_USR:
+      OPS_MGR_PWD:
 
 run:
-  path: pcf-pipelines/tasks/apply-changes/task.sh
-
+  path: jans-repo/services/mysql/configure-mysql.sh
