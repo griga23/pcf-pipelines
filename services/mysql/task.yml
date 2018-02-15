@@ -30,13 +30,17 @@ params:
       pcf_az_2:
       pcf_az_3:
       ALERT_RECIPIENT_EMAIL:
-      OPSMAN_DOMAIN_OR_IP_ADDRESS:
       OPS_MGR_USR:
       OPS_MGR_PWD:
       MYSQL_BACKUPS:
       MYSQL_BACKUPS_S3_ACCESS_KEY_ID:
       MYSQL_BACKUPS_S3_BUCKET_NAME:
       MYSQL_BACKUPS_S3_SECRET_ACCESS_KEY:
+      OPSMAN_CLIENT_ID:
+      OPSMAN_CLIENT_SECRET:
+      OPSMAN_USERNAME:
+      OPSMAN_PASSWORD:
+      OPSMAN_DOMAIN_OR_IP_ADDRESS:
 
 run:
   path: jans-repo/services/mysql/task.sh
