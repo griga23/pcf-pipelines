@@ -1,3 +1,7 @@
+#!/bin/bash
+
+set -eu
+
 # Copyright 2017-Present Pivotal Software, Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,31 +16,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
----
-platform: linux
+echo "Applying changes on Ops Manager @ ${OPSMAN_DOMAIN_OR_IP_ADDRESS}"
 
-image_resource:
-  type: docker-image
-  source:
-    repository: czero/rootfs
-
-inputs:
-  - name: jans-repo
-
-params:
-      pcf_ert_domain:
-      pcf_iaas:
-      pcf_az_1:
-      pcf_az_2:
-      pcf_az_3:
-      ALERT_RECIPIENT_EMAIL:
-      OPSMAN_DOMAIN_OR_IP_ADDRESS:
-      OPS_MGR_USR:
-      OPS_MGR_PWD:
-      MYSQL_BACKUPS:
-      MYSQL_BACKUPS_S3_ACCESS_KEY_ID:
-      MYSQL_BACKUPS_S3_BUCKET_NAME:
-      MYSQL_BACKUPS_S3_SECRET_ACCESS_KEY:
-
-run:
-  path: jans-repo/services/mysql/task.sh
+om-linux \
+  --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
+  --skip-ssl-validation \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  apply-changes \
+  --ignore-warnings
