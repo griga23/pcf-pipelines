@@ -1,4 +1,4 @@
-# Jan's file from Cristian to configure mysql tile 2
+# Jan's file from Cristian to configure mysql tile
 
 #!/bin/bash
 set -eu
