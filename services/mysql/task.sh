@@ -61,7 +61,7 @@ properties=$(
         "value": $syslog_port
       },
       ".properties.backup_options": {
-        "value": "disabled"
+        "value": "enabled"
       },
       ".properties.backup_options.enable.cron_schedule": {
         "value": "@every 30m"
