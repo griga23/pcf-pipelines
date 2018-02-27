@@ -125,7 +125,7 @@ jobs:
       pcf_iaas: aws
       pcf_az_1: {{aws_az1}}
       pcf_az_2: {{aws_az2}}
-      pcf_az_3: {{aws_az1}}
+      pcf_az_3: {{aws_az3}}
       OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
       OPS_MGR_USR: {{opsman_admin_username}}
       OPS_MGR_PWD: {{opsman_admin_password}}
