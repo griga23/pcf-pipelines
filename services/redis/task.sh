@@ -57,7 +57,7 @@ properties=$(
       ".properties.syslog_selector.active.syslog_address": {
         "value": $syslog_host
       },
-      ".properties.syslog_selector.active.port": {
+      ".properties.syslog_selector.active.syslog_port": {
         "value": $syslog_port
       },
       ".properties.syslog_selector.active.syslog_transport": {
