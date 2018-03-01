@@ -52,7 +52,7 @@ properties=$(
         "value": "Plan Inactive",
       },
       ".properties.syslog_selector": {
-        "value": "enabled"
+        "value": "Yes without encryption"
       },
       ".properties.syslog_selector.active.syslog_address": {
         "value": $syslog_host
