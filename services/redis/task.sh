@@ -39,17 +39,20 @@ properties=$(
       ".properties.small_plan_selector": {
         "value": "Plan Active"
       },
+      ".properties.small_plan_selector.active.az_single_select": {
+        "value": $pcf_az_1
+      },
       ".properties.small_plan_selector.active.vm_type": {
         "value": "t2.medium"
       },
       ".properties.small_plan_selector.active.disk_size": {
-        "value": "10240",
+        "value": "10240"
       },
       ".properties.medium_plan_selector": {
-        "value": "Plan Inactive",
+        "value": "Plan Inactive"
       },
       ".properties.large_plan_selector": {
-        "value": "Plan Inactive",
+        "value": "Plan Inactive"
       },
       ".properties.syslog_selector": {
         "value": "Yes without encryption"
