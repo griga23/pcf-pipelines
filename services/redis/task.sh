@@ -73,7 +73,7 @@ om-linux \
   --password "$OPS_MGR_PWD" \
   --skip-ssl-validation \
   configure-product \
-  --product-name p-rabbitmq \
+  --product-name p-redis \
   --product-network "$network"
 
 om-linux \
@@ -82,7 +82,7 @@ om-linux \
   --password "$OPS_MGR_PWD" \
   --skip-ssl-validation \
   configure-product \
-  --product-name p-rabbitmq \
+  --product-name p-redis \
   --product-properties "$properties"
 
 om-linux \
@@ -91,7 +91,7 @@ om-linux \
   --password "$OPS_MGR_PWD" \
   --skip-ssl-validation \
   set-errand-state \
-  --product-name "p-rabbitmq" \
+  --product-name "p-redis" \
   --errand-name "broker-registrar" \
   --post-deploy-state "when-changed"
 
@@ -101,7 +101,7 @@ om-linux \
   --password "$OPS_MGR_PWD" \
   --skip-ssl-validation \
   set-errand-state \
-  --product-name "p-rabbitmq" \
+  --product-name "p-redis" \
   --errand-name "register-on-demand-service-broker" \
   --post-deploy-state "when-changed"
 
@@ -111,7 +111,7 @@ om-linux \
   --password "$OPS_MGR_PWD" \
   --skip-ssl-validation \
   set-errand-state \
-  --product-name "p-rabbitmq" \
+  --product-name "p-redis" \
   --errand-name "upgrade-all-service-instances" \
   --post-deploy-state "when-changed"
 
@@ -121,6 +121,6 @@ om-linux \
   --password "$OPS_MGR_PWD" \
   --skip-ssl-validation \
   set-errand-state \
-  --product-name "p-rabbitmq" \
+  --product-name "p-redis" \
   --errand-name "multitenant-smoke-tests" \
   --post-deploy-state "when-changed"
