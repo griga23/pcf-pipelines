@@ -1,11 +1,11 @@
 groups: []
 resources:
-- name: pivnet-mysql
+- name: pivnet-redis
   type: pivnet
   source:
     api_token: {{pivnet_token}}
-    product_slug: p-mysql
-    product_version: {{mysql_major_minor_version}}
+    product_slug: p-redis
+    product_version: {{redis_major_minor_version}}
     sort_by: semver
 - name: pcf-pipelines-tarball
   type: pivnet
@@ -28,10 +28,10 @@ resource_types:
 jobs:
 - name: regulator
   plan:
-  - get: pivnet-mysql
+  - get: pivnet-redis
     params:
       globs: []
-- name: upload-mysql
+- name: upload-redis
   serial_groups:
   - opsman
   plan:
@@ -60,10 +60,10 @@ jobs:
       passed:
       - regulator
       trigger: true
-      resource: pivnet-mysql
+      resource: pivnet-redis
       params:
         globs:
-        - {{mysql_major_minor_file}}
+        - {{redis_major_minor_file}}
   - task: upload-tile
     file: pcf-pipelines/tasks/upload-product-and-stemcell/task.yml
     params:
@@ -84,7 +84,7 @@ jobs:
       OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
       OPSMAN_PASSWORD: {{opsman_admin_password}}
       OPSMAN_USERNAME: {{opsman_admin_username}}
-- name: deploy-mysql
+- name: deploy-redis
   serial_groups:
   - opsman
   plan:
@@ -112,14 +112,14 @@ jobs:
             path: ""
   - get: pivnet-product
     passed:
-    - upload-mysql
+    - upload-redis
     trigger: true
-    resource: pivnet-mysql
+    resource: pivnet-redis
     params:
       globs:
-      - {{mysql_major_minor_file}}
-  - task: configure-mysql
-    file: jans-repo/services/mysql/task.yml
+      - {{redis_major_minor_file}}
+  - task: configure-redis
+    file: jans-repo/services/redis/task.yml
     params:
       pcf_ert_domain: {{ERT_DOMAIN}}
       pcf_iaas: aws
@@ -133,13 +133,13 @@ jobs:
       OPSMAN_CLIENT_ID: {{opsman_client_id}}
       OPSMAN_CLIENT_SECRET: {{opsman_client_secret}}
       OPSMAN_PASSWORD: {{opsman_admin_password}}
-      OPSMAN_USERNAME: {{opsman_admin_username}}      
+      OPSMAN_USERNAME: {{opsman_admin_username}}
       MYSQL_BACKUPS: {{mysql_backups}}
       MYSQL_BACKUPS_S3_ACCESS_KEY_ID: {{mysql_backups_s3_access_key_id}}
       MYSQL_BACKUPS_S3_BUCKET_NAME: {{mysql_backups_s3_bucket_name}}
       MYSQL_BACKUPS_S3_SECRET_ACCESS_KEY: {{mysql_backups_s3_secret_access_key}}
 
-  - task: deploy-mysql
+  - task: deploy-redis
     file: pcf-pipelines/tasks/apply-changes/task.yml
     params:
       OPSMAN_CLIENT_ID: {{opsman_client_id}}
