@@ -58,7 +58,7 @@ properties=$(
         ]
       },
       ".properties.on_demand_broker_dedicated_single_node_plan_rabbitmq_vm_type": {
-        "value": "c4.large"
+        "value": "t2.medium"
       },
       ".properties.on_demand_broker_dedicated_single_node_plan_rabbitmq_persistent_disk_type": {
         "value": "10240"
