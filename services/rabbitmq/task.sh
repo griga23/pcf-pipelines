@@ -57,6 +57,27 @@ properties=$(
           $pcf_az_3
         ]
       },
+      ".properties.on_demand_broker_plan_1_cf_service_access": {
+        "value": "enable"
+      },
+      ".properties.on_demand_broker_plan_1_name": {
+      "value": "single-node"
+      },
+      ".properties.on_demand_broker_plan_1_description": {
+        "value": "This plan provides a single dedicated RabbitMQ node"
+      },
+      ".properties.on_demand_broker_plan_1_instance_quota": {
+        "value": 5
+      },
+      ".properties.on_demand_broker_plan_1_features": {
+        "value": "RabbitMQ"
+      },
+      ".properties.on_demand_broker_plan_1_rabbitmq_number_of_nodes": {
+        "value": 1
+      },
+      ".properties.on_demand_broker_plan_1_rabbitmq_cluster_partition_handling_strategy": {
+        "value": "pause_minority"
+      },
       ".properties.on_demand_broker_plan_1_rabbitmq_vm_type": {
         "value": "t2.medium"
       },
