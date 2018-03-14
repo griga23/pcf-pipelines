@@ -50,20 +50,20 @@ properties=$(
       ".properties.syslog_selector": {
         "value": "disabled"
       },
-      ".properties.on_demand_broker_plan_1_rabbitmq_az_placement": {
+      ".properties.on_demand_broker_dedicated_single_node_plan_rabbitmq_az_placement": {
         "value": [
           $pcf_az_1,
           $pcf_az_2,
           $pcf_az_3
         ]
       },
-      ".properties.on_demand_broker_plan_1_rabbitmq_vm_type": {
-        "value": "c4.large"
+      ".properties.on_demand_broker_dedicated_single_node_plan_rabbitmq_vm_type": {
+        "value": "t2.medium"
       },
-      ".properties.on_demand_broker_plan_1_rabbitmq_persistent_disk_type": {
+      ".properties.on_demand_broker_dedicated_single_node_plan_rabbitmq_persistent_disk_type": {
         "value": "10240"
       },
-      ".properties.on_demand_broker_plan_1_disk_limit_acknowledgement": {
+      ".properties.on_demand_broker_dedicated_single_node_plan_disk_limit_acknowledgement": {
         "value": [
           "acknowledge"
         ]
